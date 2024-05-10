@@ -38,7 +38,7 @@ public class FileUploadServiceImplementation implements FileUploadService {
                 Files.write(filePath, fileBytes);
 
                 // Save file details to repository
-                fileUploadRepository.save(uri, entityId, entityName);
+                fileUploadRepository.save(file, entityId, entityName);
 
                 return "File uploaded successfully";
             } catch (IOException e) {
