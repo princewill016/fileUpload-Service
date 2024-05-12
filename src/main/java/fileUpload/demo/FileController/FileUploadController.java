@@ -17,7 +17,10 @@ public class FileUploadController {
     public void uploadFile(@RequestParam("file") MultipartFile file,
             @RequestParam("entityName") String entityName,
             @RequestParam("entityId") String entityId) {
-        fileUploadService.addFile(file, entityName, entityId);
+        if (file.isEmpty()) {
+            throw new IllegalStateException();
+        } else
+            fileUploadService.addFile(file, entityName, entityId);
     }
 
     @GetMapping("/file/{uri}")
@@ -25,4 +28,4 @@ public class FileUploadController {
         return fileUploadService.getFile(null);
     }
 
-} 
+}
