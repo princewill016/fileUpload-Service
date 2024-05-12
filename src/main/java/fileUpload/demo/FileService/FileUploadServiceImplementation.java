@@ -38,19 +38,21 @@ public class FileUploadServiceImplementation implements FileUploadService {
     @Override
     public String addFile(MultipartFile file, String entityName, String entityId) {
 
-        if (!file.isEmpty() && isSupportedFile(file.getOriginalFilename())) {
-            String fileName = UUID.randomUUID().toString() + getFileExtension(file.getOriginalFilename());
-            // String uri = "/api/files/" + fileName;
+        if (isSupportedFile(file.getOriginalFilename())) {
+            String newFileName = getFileExtension(file.getOriginalFilename()) + UUID.randomUUID().toString();
+            String uri = "/api/files/" + newFileName;
 
             try {
                 byte[] fileBytes = file.getBytes();
-                Path filePath = Paths.get(fileName);
+                Path filePath = Paths.get(newFileName);
                 Files.write(filePath, fileBytes);
-
                 // Save file details to repository
                 fileUploadRepository.save(file, entityId, entityName);
 
-                return "File uploaded successfully";
+                return """
+                        File uploaded successfully,
+                        URI: %d
+                        """.formatted(uri);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to upload file", e);
             }
