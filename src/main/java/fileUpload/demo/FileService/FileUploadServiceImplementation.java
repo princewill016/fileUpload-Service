@@ -39,8 +39,9 @@ public class FileUploadServiceImplementation implements FileUploadService {
     public String addFile(MultipartFile file, String entityName, String entityId) {
 
         if (isSupportedFile(file.getOriginalFilename())) {
-            String newFileName = getFileExtension(file.getOriginalFilename()) + UUID.randomUUID().toString();
-            String uri = "/api/files/" + newFileName;
+            String uuid = UUID.randomUUID().toString();
+            String newFileName = getFileExtension(file.getOriginalFilename()) + uuid;
+            // String uri = "/api/files/" + newFileName;
 
             try {
                 byte[] fileBytes = file.getBytes();
@@ -51,8 +52,8 @@ public class FileUploadServiceImplementation implements FileUploadService {
 
                 return """
                         File uploaded successfully,
-                        URI: %d
-                        """.formatted(uri);
+                        Unique ID: %d
+                        """.formatted(uuid);
             } catch (IOException e) {
                 throw new RuntimeException("Failed to upload file", e);
             }
@@ -62,13 +63,10 @@ public class FileUploadServiceImplementation implements FileUploadService {
     }
 
     @Override
-    public byte[] getFile(String uri) {
-        try {
-            Path filePath = Paths.get(uri);
-            return Files.readAllBytes(filePath);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to retrieve file", e);
-        }
+    public byte[] getFile(Long uuid, String entityName) throws IOException {
+        String storageFolderPath = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
+        Path filePath = Paths.get(storageFolderPath, entityName, uuid.toString());
+        return Files.readAllBytes(filePath);
     }
 
 }

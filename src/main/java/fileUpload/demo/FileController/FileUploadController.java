@@ -1,9 +1,10 @@
 package fileUpload.demo.FileController;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import fileUpload.demo.FileService.FileUploadService;
 
 @RestController
@@ -23,9 +24,10 @@ public class FileUploadController {
             fileUploadService.addFile(file, entityName, entityId);
     }
 
-    @GetMapping("/file/{uri}")
-    public byte[] getfile() {
-        return fileUploadService.getFile(null);
+    @GetMapping(path = "/files/{uuid}/{entityName}")
+    public byte[] getfile(@PathVariable("uuid") Long uuid, @PathVariable("entityName") String entityName)
+            throws IOException {
+        return fileUploadService.getFile(uuid, entityName);
     }
 
 }
