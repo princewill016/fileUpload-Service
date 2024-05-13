@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadServiceImplementation implements FileUploadService {
 
     String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
+
     private final List<String> supportedFileExtensions = Arrays.asList(".JPG", ".JPEG", ".PNG", ".TXT", ".PDF");
 
     private String getFileExtension(String fileName) {
@@ -37,7 +38,6 @@ public class FileUploadServiceImplementation implements FileUploadService {
 
         String entityNameInDirectory = entityName;
         Path entityFolderPath = Paths.get(uploadLocation, entityNameInDirectory);
-
         if (isSupportedFile(file.getOriginalFilename())) {
             if (!Files.exists(entityFolderPath) && !Files.isDirectory(entityFolderPath)) {
                 // Construct the file path where the uploaded file will be saved
@@ -47,8 +47,10 @@ public class FileUploadServiceImplementation implements FileUploadService {
             String newFileName = timeStamp + getFileExtension(file.getOriginalFilename());
 
             try {
+                String newFileLocation = uploadLocation + "/" + entityNameInDirectory;
+
                 byte[] fileBytes = file.getBytes();
-                Path targetLocation = Paths.get(uploadLocation, newFileName);
+                Path targetLocation = Paths.get(newFileLocation, newFileName);
                 Files.write(targetLocation, fileBytes);
                 return "File uploaded successfully";
             } catch (IOException e) {
@@ -60,11 +62,11 @@ public class FileUploadServiceImplementation implements FileUploadService {
     }
 
     @Override
-    public byte[] getFile(Long uuid) throws IOException {
-        String storageFolderPath = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
+    public byte[] getFile(String entityName, Long uuid) throws IOException {
+        String storedFilePath = "/Users/admin/Desktop/fileUpload Service/uploaded-files/" + entityName;
 
         String fileEx = null; // Initialize variable to hold extension (or null if not found)
-        for (Path filePath : Files.newDirectoryStream(Paths.get(storageFolderPath))) {
+        for (Path filePath : Files.newDirectoryStream(Paths.get(storedFilePath))) {
             String fileName = filePath.getFileName().toString();
 
             // Check if filename contains the uuid (case-insensitive)
@@ -85,12 +87,11 @@ public class FileUploadServiceImplementation implements FileUploadService {
             throw new IOException("Theres no file with that id");
         }
 
-        Path filePath = Paths.get(storageFolderPath, uuid.toString() + "." + fileEx);
+        Path filePath = Paths.get(storedFilePath, uuid.toString() + "." + fileEx);
         if (Files.exists(filePath)) {
             return Files.readAllBytes(filePath);
         } else {
             throw new IOException("File not found in our database");
         }
     }
-
 }

@@ -8,6 +8,6 @@ public interface FileUploadService {
 
     String addFile(MultipartFile file, String entityName) throws IOException;
 
-    byte[] getFile(Long uuid) throws IOException;
+    byte[] getFile(String entityName,Long uuid) throws IOException;
 
 }
