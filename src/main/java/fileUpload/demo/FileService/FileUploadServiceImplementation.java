@@ -36,7 +36,7 @@ public class FileUploadServiceImplementation implements FileUploadService {
     }
 
     @Override
-    public String addFile(MultipartFile file, String entityName, String entityId) {
+    public String addFile(MultipartFile file) {
 
         if (isSupportedFile(file.getOriginalFilename())) {
             String uuid = UUID.randomUUID().toString();
@@ -48,12 +48,9 @@ public class FileUploadServiceImplementation implements FileUploadService {
                 Path filePath = Paths.get(newFileName);
                 Files.write(filePath, fileBytes);
                 // Save file details to repository
-                fileUploadRepository.save(file, entityId, entityName);
+                fileUploadRepository.save(file);
 
-                return """
-                        File uploaded successfully,
-                        Unique ID: %d
-                        """.formatted(uuid);
+                return "File uploaded successfully";
             } catch (IOException e) {
                 throw new RuntimeException("Failed to upload file", e);
             }

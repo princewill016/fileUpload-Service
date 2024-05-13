@@ -12,7 +12,7 @@ public class FileUploadRepository {
 
     String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
 
-    public String save(MultipartFile file, String entityId, String entityName) throws IOException {
+    public String save(MultipartFile file) throws IOException {
 
         // to check the storage directory if the file already exists otherwise it
         // creates the file.
