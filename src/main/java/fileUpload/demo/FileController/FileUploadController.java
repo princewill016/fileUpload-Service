@@ -15,17 +15,17 @@ public class FileUploadController {
     private FileUploadService fileUploadService;
 
     @PostMapping("/upload")
-    public void uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+    public String uploadFile(@RequestParam("file") MultipartFile file, String entityName) throws IOException {
         if (file.isEmpty()) {
             throw new IllegalStateException();
         } else
-            fileUploadService.addFile(file);
+            fileUploadService.addFile(file, entityName);
+        return "File uploaded successfully";
     }
 
-    @GetMapping(path = "/files/{uuid}/{entityName}")
-    public byte[] getfile(@PathVariable("uuid") Long uuid, @PathVariable("entityName") String entityName)
+    @GetMapping(path = "/files/{uuid}")
+    public byte[] getfile(@PathVariable("uuid") Long uuid)
             throws IOException {
-        return fileUploadService.getFile(uuid, entityName);
+        return fileUploadService.getFile(uuid);
     }
-
 }
