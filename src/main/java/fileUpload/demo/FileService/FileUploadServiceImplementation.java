@@ -20,7 +20,7 @@ public class FileUploadServiceImplementation implements FileUploadService {
     @Autowired
     private FileUploadRepository fileUploadRepository;
 
-    private final List<String> supportedFileExtensions = Arrays.asList(".jpg", ".jpeg", ".png", ".txt", ".pdf");
+    private final List<String> supportedFileExtensions = Arrays.asList(".JPG", ".JPEG", ".PNG", ".TXT", ".pdf");
 
     private String getFileExtension(String fileName) {
         if (fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0) {
