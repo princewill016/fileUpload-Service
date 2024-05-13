@@ -4,22 +4,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import fileUpload.demo.FileRepository.FileUploadRepository;
 
 @Service
 public class FileUploadServiceImplementation implements FileUploadService {
 
-    @Autowired
-    private FileUploadRepository fileUploadRepository;
-
+    String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
     private final List<String> supportedFileExtensions = Arrays.asList(".JPG", ".JPEG", ".PNG", ".TXT", ".pdf");
 
     private String getFileExtension(String fileName) {
@@ -36,20 +30,24 @@ public class FileUploadServiceImplementation implements FileUploadService {
     }
 
     @Override
-    public String addFile(MultipartFile file) {
+    public String addFile(MultipartFile file) throws IOException {
+
+        String entityNameInDirectory = "entity";
+        Path entityFolderPath = Paths.get(uploadLocation, entityNameInDirectory);
 
         if (isSupportedFile(file.getOriginalFilename())) {
-            String uuid = UUID.randomUUID().toString();
-            String newFileName = getFileExtension(file.getOriginalFilename()) + uuid;
-            // String uri = "/api/files/" + newFileName;
+            if (!Files.exists(entityFolderPath) && !Files.isDirectory(entityFolderPath)) {
+                // Construct the file path where the uploaded file will be saved
+                Files.createDirectory(entityFolderPath);
+            } else
+                return ""; 
+            Long timeStamp = Instant.now().toEpochMilli();
+            String newFileName = timeStamp + getFileExtension(file.getOriginalFilename());
 
             try {
                 byte[] fileBytes = file.getBytes();
-                Path filePath = Paths.get(newFileName);
-                Files.write(filePath, fileBytes);
-                // Save file details to repository
-                fileUploadRepository.save(file);
-
+                Path targetLocation = Paths.get(uploadLocation, newFileName);
+                Files.write(targetLocation, fileBytes);
                 return "File uploaded successfully";
             } catch (IOException e) {
                 throw new RuntimeException("Failed to upload file", e);
