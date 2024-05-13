@@ -28,5 +28,7 @@ public class FileUploadController {
             throws IOException {
         return fileUploadService.getFile(entityName, uuid);
     }
+
+    //todo....  post method should return the UUID and entity name to user.
 }
 
