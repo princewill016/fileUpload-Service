@@ -15,9 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileUploadServiceImplementation implements FileUploadService {
+    @Override
+    public Long getTimeStamp() {
+        return timeStamp;
+    }
 
-    String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
-
+    private String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
+    private Long timeStamp = Instant.now().toEpochMilli();
     private final List<String> supportedFileExtensions = Arrays.asList(".JPG", ".JPEG", ".PNG", ".TXT", ".PDF");
 
     private String getFileExtension(String fileName) {
@@ -35,15 +39,16 @@ public class FileUploadServiceImplementation implements FileUploadService {
 
     @Override
     public String addFile(MultipartFile file, String entityName) throws IOException {
-
+        Long maxSize = 5242880L;
+        long fileSize = file.getSize();
         String entityNameInDirectory = entityName;
         Path entityFolderPath = Paths.get(uploadLocation, entityNameInDirectory);
-        if (isSupportedFile(file.getOriginalFilename())) {
+        if (isSupportedFile(file.getOriginalFilename()) && (fileSize <= maxSize)) {
             if (!Files.exists(entityFolderPath) && !Files.isDirectory(entityFolderPath)) {
                 // Construct the file path where the uploaded file will be saved
                 Files.createDirectory(entityFolderPath);
             }
-            Long timeStamp = Instant.now().toEpochMilli();
+
             String newFileName = timeStamp + getFileExtension(file.getOriginalFilename());
 
             try {
@@ -52,12 +57,12 @@ public class FileUploadServiceImplementation implements FileUploadService {
                 byte[] fileBytes = file.getBytes();
                 Path targetLocation = Paths.get(newFileLocation, newFileName);
                 Files.write(targetLocation, fileBytes);
-                return "File uploaded successfully";
+                return "";
             } catch (IOException e) {
                 throw new RuntimeException("Failed to upload file", e);
             }
         } else {
-            throw new IllegalArgumentException("Unsupported file type or file is empty");
+            throw new IllegalArgumentException("file too large, upload a file less than 10mb");
         }
     }
 
@@ -94,4 +99,5 @@ public class FileUploadServiceImplementation implements FileUploadService {
             throw new IOException("File not found in our database");
         }
     }
+
 }

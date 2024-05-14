@@ -13,14 +13,16 @@ public class FileUploadController {
 
     @Autowired
     private FileUploadService fileUploadService;
+    private Long time;
 
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file, String entityName) throws IOException {
         if (file.isEmpty()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Select a file to upload");
         } else
+            time = fileUploadService.getTimeStamp();
             fileUploadService.addFile(file, entityName);
-        return "File uploaded successfully";
+        return String.format("File uploaded successfully, unique ID: %d, entity-name: %s", time, entityName + ".");
     }
 
     @GetMapping(path = "/files/{entityName}/{uuid}")
@@ -29,6 +31,4 @@ public class FileUploadController {
         return fileUploadService.getFile(entityName, uuid);
     }
 
-    // todo.... post method should return the UUID and entity name to user. user
-    // return Stfring.format("whatever it is %d", whatshould be %d)
 }
