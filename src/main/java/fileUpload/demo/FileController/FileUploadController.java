@@ -29,6 +29,6 @@ public class FileUploadController {
         return fileUploadService.getFile(entityName, uuid);
     }
 
-    //todo....  post method should return the UUID and entity name to user.
+    // todo.... post method should return the UUID and entity name to user. user
+    // return Stfring.format("whatever it is %d", whatshould be %d)
 }
-
