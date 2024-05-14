@@ -10,7 +10,7 @@ public interface FileUploadService {
 
     byte[] getFile(String entityName, Long uuid) throws IOException;
 
-    Long getTimeStamp();
+
 
 
 }

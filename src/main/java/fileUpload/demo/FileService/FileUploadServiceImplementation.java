@@ -15,13 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileUploadServiceImplementation implements FileUploadService {
-    @Override
-    public Long getTimeStamp() {
-        return timeStamp;
-    }
+   
 
     private String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
-    private Long timeStamp = Instant.now().toEpochMilli();
     private final List<String> supportedFileExtensions = Arrays.asList(".JPG", ".JPEG", ".PNG", ".TXT", ".PDF");
 
     private String getFileExtension(String fileName) {
