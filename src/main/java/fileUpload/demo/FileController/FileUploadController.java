@@ -1,6 +1,7 @@
 package fileUpload.demo.FileController;
 
 import java.io.IOException;
+import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class FileUploadController {
         if (file.isEmpty()) {
             throw new IllegalStateException("Select a file to upload");
         } else
-            time = fileUploadService.getTimeStamp();
+            time = Instant.now().toEpochMilli();
         fileUploadService.addFile(file, entityName);
         return String.format("File uploaded successfully, unique ID: %d, entity-name: %s", time, entityName + ".");
     }

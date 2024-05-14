@@ -39,17 +39,13 @@ public class FileUploadServiceImplementation implements FileUploadService {
 
     @Override
     public String addFile(MultipartFile file, String entityName) throws IOException {
-        // Long maxSize = 5242880L;
-        // long fileSize = file.getSize();
         String entityNameInDirectory = entityName;
         Path entityFolderPath = Paths.get(uploadLocation, entityNameInDirectory);
         if (isSupportedFile(file.getOriginalFilename())) {
             if (!Files.exists(entityFolderPath) && !Files.isDirectory(entityFolderPath)) {
-                // Construct the file path where the uploaded file will be saved
                 Files.createDirectory(entityFolderPath);
             }
-
-            String newFileName = timeStamp + getFileExtension(file.getOriginalFilename());
+            String newFileName = Instant.now().toEpochMilli() + getFileExtension(file.getOriginalFilename());
 
             try {
                 String newFileLocation = uploadLocation + "/" + entityNameInDirectory;
@@ -70,28 +66,19 @@ public class FileUploadServiceImplementation implements FileUploadService {
     public byte[] getFile(String entityName, Long uuid) throws IOException {
         String storedFilePath = "/Users/admin/Desktop/fileUpload Service/uploaded-files/" + entityName;
 
-        String fileEx = null; // Initialize variable to hold extension (or null if not found)
+        String fileEx = null;
         for (Path filePath : Files.newDirectoryStream(Paths.get(storedFilePath))) {
             String fileName = filePath.getFileName().toString();
 
-            // Check if filename contains the uuid (case-insensitive)
             if (fileName.toLowerCase().contains(uuid.toString().toLowerCase())) {
-                // Extract extension using a more robust method (regular expression)
-                String regex = "\\.(\\w+)$"; // Matches any dot followed by 1+ word characters
+                String regex = "\\.(\\w+)$";
                 Matcher matcher = Pattern.compile(regex).matcher(fileName);
                 if (matcher.find()) {
                     fileEx = matcher.group(1);
-                    break; // Exit the loop once a match is found
+                    break;
                 }
             }
         }
-
-        // Check if fileEx is still null, indicating that no file with the UUID was
-        // found
-        if (fileEx == null) {
-            throw new IOException("Theres no file with that id");
-        }
-
         Path filePath = Paths.get(storedFilePath, uuid.toString() + "." + fileEx);
         if (Files.exists(filePath)) {
             return Files.readAllBytes(filePath);
