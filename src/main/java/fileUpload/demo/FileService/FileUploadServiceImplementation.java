@@ -39,11 +39,11 @@ public class FileUploadServiceImplementation implements FileUploadService {
 
     @Override
     public String addFile(MultipartFile file, String entityName) throws IOException {
-        Long maxSize = 5242880L;
-        long fileSize = file.getSize();
+        // Long maxSize = 5242880L;
+        // long fileSize = file.getSize();
         String entityNameInDirectory = entityName;
         Path entityFolderPath = Paths.get(uploadLocation, entityNameInDirectory);
-        if (isSupportedFile(file.getOriginalFilename()) && (fileSize <= maxSize)) {
+        if (isSupportedFile(file.getOriginalFilename())) {
             if (!Files.exists(entityFolderPath) && !Files.isDirectory(entityFolderPath)) {
                 // Construct the file path where the uploaded file will be saved
                 Files.createDirectory(entityFolderPath);
