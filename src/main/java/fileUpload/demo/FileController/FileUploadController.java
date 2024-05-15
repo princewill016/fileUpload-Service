@@ -1,9 +1,12 @@
 package fileUpload.demo.FileController;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import fileUpload.demo.FileService.FileUploadService;
@@ -26,11 +29,16 @@ public class FileUploadController {
     }
 
     @GetMapping(path = "/files/{entityName}/{uuid}")
-    public byte[] getfile(@PathVariable("entityName") String entityName, @PathVariable("uuid") Long uuid)
+    public ResponseEntity<byte[]> getfile(@PathVariable("entityName") String entityName, @PathVariable("uuid") Long uuid)
             throws IOException {
-        return fileUploadService.getFile(entityName, uuid);
+                  try {
+            byte[] fileBytes = fileUploadService.getFile(entityName, uuid);
+            return ResponseEntity.ok().body(fileBytes);
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
     }
 
-    // todo the get method should return image instead of byte....the post method
-    // doesnt post more images
-}

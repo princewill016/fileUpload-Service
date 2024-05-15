@@ -1,5 +1,6 @@
 package fileUpload.demo.FileService;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileUploadServiceImplementation implements FileUploadService {
-   
 
     private String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
     private final List<String> supportedFileExtensions = Arrays.asList(".JPG", ".JPEG", ".PNG", ".TXT", ".PDF");
@@ -79,7 +79,7 @@ public class FileUploadServiceImplementation implements FileUploadService {
         if (Files.exists(filePath)) {
             return Files.readAllBytes(filePath);
         } else {
-            throw new IOException("File not found in our database");
+            throw new FileNotFoundException("File not found, check your entity-name or ID");
         }
     }
 
