@@ -1,7 +1,7 @@
 package fileUpload.demo.FileController;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +29,16 @@ public class FileUploadController {
     }
 
     @GetMapping(path = "/files/{entityName}/{uuid}")
-    public ResponseEntity<byte[]> getfile(@PathVariable("entityName") String entityName, @PathVariable("uuid") Long uuid)
+    public ResponseEntity<byte[]> getfile(@PathVariable("entityName") String entityName,
+            @PathVariable("uuid") Long uuid)
             throws IOException {
-                  try {
+        try {
             byte[] fileBytes = fileUploadService.getFile(entityName, uuid);
             return ResponseEntity.ok().body(fileBytes);
-        } catch (FileNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            String errorMessage = "File not found, check your entity-name or ID";
+            byte[] errorMessageBytes = errorMessage.getBytes(StandardCharsets.UTF_8);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessageBytes);
         }
     }
-    }
-
+}
