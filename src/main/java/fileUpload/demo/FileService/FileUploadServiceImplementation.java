@@ -58,6 +58,7 @@ public class FileUploadServiceImplementation implements FileUploadService {
         }
     }
 
+    
     @Override
     public byte[] getFile(String entityName, Long uuid) throws IOException {
         String storedFilePath = "/Users/admin/Desktop/fileUpload Service/uploaded-files/" + entityName;

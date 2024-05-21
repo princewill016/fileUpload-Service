@@ -41,4 +41,6 @@ public class FileUploadController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessageBytes);
         }
     }
+
+    //todo::: get should return an image
 }
