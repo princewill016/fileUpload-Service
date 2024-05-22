@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileUploadServiceImplementation implements FileUploadService {
 
-    private String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
     private final List<String> supportedFileExtensions = Arrays.asList(".JPG", ".JPEG", ".PNG", ".TXT", ".PDF");
 
     private String getFileExtension(String fileName) {
@@ -34,14 +34,15 @@ public class FileUploadServiceImplementation implements FileUploadService {
     }
 
     @Override
-    public String addFile(MultipartFile file, String entityName) throws IOException {
-        String entityNameInDirectory = entityName;
+    public void addFile(MultipartFile file, String entityName) throws IOException {
+        String entityNameInDirectory;
+        entityNameInDirectory = entityName;
+        String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
         Path entityFolderPath = Paths.get(uploadLocation, entityNameInDirectory);
         if (isSupportedFile(file.getOriginalFilename())) {
-            if (!Files.exists(entityFolderPath) && !Files.isDirectory(entityFolderPath)) {
+            if (!Files.exists(entityFolderPath) && !Files.isDirectory(entityFolderPath))
                 Files.createDirectory(entityFolderPath);
-            }
-            String newFileName = Instant.now().toEpochMilli() + getFileExtension(file.getOriginalFilename());
+            String newFileName = Instant.now().toEpochMilli() + getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
 
             try {
                 String newFileLocation = uploadLocation + "/" + entityNameInDirectory;
@@ -49,7 +50,6 @@ public class FileUploadServiceImplementation implements FileUploadService {
                 byte[] fileBytes = file.getBytes();
                 Path targetLocation = Paths.get(newFileLocation, newFileName);
                 Files.write(targetLocation, fileBytes);
-                return "";
             } catch (IOException e) {
                 throw new RuntimeException("Failed to upload file", e);
             }

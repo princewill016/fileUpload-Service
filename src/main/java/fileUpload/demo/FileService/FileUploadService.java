@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileUploadService {
 
-    String addFile(MultipartFile file, String entityName) throws IOException;
+    void addFile(MultipartFile file, String entityName) throws IOException;
 
     byte[] getFile(String entityName, Long uuid) throws IOException;
 

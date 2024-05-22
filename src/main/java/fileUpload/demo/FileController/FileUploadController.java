@@ -15,14 +15,14 @@ import fileUpload.demo.FileService.FileUploadService;
 @RequestMapping("/api/v2")
 public class FileUploadController {
     @Autowired
-    private FileUploadService fileUploadService;
-    private Long time;
-
+    private  FileUploadService fileUploadService;
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file, String entityName) throws IOException {
+        long time;
         if (file.isEmpty()) {
             throw new IllegalStateException("Select a file to upload");
-        } else
+        }
+         else
             time = Instant.now().toEpochMilli();
         fileUploadService.addFile(file, entityName);
         return String.format("File uploaded successfully, unique ID: %d, entity-name: %s", time, entityName + ".");
@@ -31,7 +31,7 @@ public class FileUploadController {
     @GetMapping(path = "/files/{entityName}/{uuid}")
     public ResponseEntity<byte[]> getfile(@PathVariable("entityName") String entityName,
             @PathVariable("uuid") Long uuid)
-            throws IOException {
+          {
         try {
             byte[] fileBytes = fileUploadService.getFile(entityName, uuid);
             return ResponseEntity.ok().body(fileBytes);
