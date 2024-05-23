@@ -11,4 +11,6 @@ public interface FileUploadService {
    byte[] getFile(String entityName, Long uuid) throws IOException;
 
    String getFileExtension(byte[] fileBytes);
+
+   long getTime();
 }

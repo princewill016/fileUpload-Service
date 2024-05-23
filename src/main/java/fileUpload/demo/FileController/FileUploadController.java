@@ -15,7 +15,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 
 @RestController
 @RequestMapping("/api/v2")
@@ -29,7 +28,7 @@ public class FileUploadController {
       if(file.isEmpty()) {
          throw new IllegalStateException("Select a file to upload");
       } else
-         time = Instant.now().toEpochMilli();
+         time = fileUploadService.getTime();
       fileUploadService.addFile(file, entityName);
       return String.format("File uploaded successfully, unique ID: %d, entity-name: %s", time, entityName + ".");
    }
@@ -54,5 +53,4 @@ public class FileUploadController {
       }
    }
 }
-
-//todo..fix the time stamp bug
+//ID now use uniform time

@@ -36,6 +36,7 @@ public class FileUploadServiceImplementation implements FileUploadService {
 
    @Override
    public void addFile(MultipartFile file, String entityName) throws IOException {
+//      long time = Instant.now().toEpochMilli();
       String entityNameInDirectory;
       entityNameInDirectory = entityName;
       String uploadLocation = "/Users/admin/Desktop/fileUpload Service/uploaded-files";
@@ -43,7 +44,7 @@ public class FileUploadServiceImplementation implements FileUploadService {
       if(isSupportedFile(file.getOriginalFilename())) {
          if(! Files.exists(entityFolderPath) && ! Files.isDirectory(entityFolderPath))
             Files.createDirectory(entityFolderPath);
-         String newFileName = Instant.now().toEpochMilli() + getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
+         String newFileName = getTime() + getFileExtension(Objects.requireNonNull(file.getOriginalFilename()));
 
          try {
             String newFileLocation = uploadLocation + "/" + entityNameInDirectory;
@@ -57,6 +58,10 @@ public class FileUploadServiceImplementation implements FileUploadService {
       } else {
          throw new IllegalArgumentException("file too large, upload a file less than 10mb");
       }
+   }
+
+   public long getTime() {
+      return Instant.now().toEpochMilli();
    }
 
    @Override
@@ -103,4 +108,4 @@ public class FileUploadServiceImplementation implements FileUploadService {
 
 }
 
-//todo..fix the time stamp bug
+//ID now use uniform time
